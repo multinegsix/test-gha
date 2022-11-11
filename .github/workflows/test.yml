@@ -6,48 +6,49 @@ on:
   workflow_dispatch:
 
 jobs:
-  Test_First_Job:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Convert input to JSON for matrix.
-        id: matrix_json_step
-        run: |
-          jsonArrayString="{\"JSON_ARRAY\":[\"test1:test2:test3\",\"test4:test5:test6\"]}"
-          echo "JSON_ARRAY=${jsonArrayString}" >> $GITHUB_OUTPUT
-    outputs:
-      JSON_ARRAY: ${{ steps.matrix_json_step.outputs.JSON_ARRAY }}
-
-  Test_Second_Job:
-    runs-on: ubuntu-latest
-    needs: Test_First_Job
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.Test_First_Job.outputs.JSON_ARRAY) }}
-    steps:
-      - name: Print JSON_ARRAY
-        run: |
-          echo "JSON_ARRAY VALUE IN SECOND JOB: ${{ matrix.JSON_ARRAY }}"
-
   # Test_First_Job:
-  #   runs-on: windows-2019
+  #   runs-on: ubuntu-latest
   #   steps:
   #     - name: Convert input to JSON for matrix.
   #       id: matrix_json_step
-  #       shell: pwsh
   #       run: |
-  #         $jsonArrayString = "{`"JSON_ARRAY`":[`"test1:test2:test3`",`"test4:test5:test6`"]}"
+  #         jsonArrayString="{\"JSON_ARRAY\":[\"test1:test2:test3\",\"test4:test5:test6\"]}"
   #         echo "JSON_ARRAY=${jsonArrayString}" >> $GITHUB_OUTPUT
   #   outputs:
   #     JSON_ARRAY: ${{ steps.matrix_json_step.outputs.JSON_ARRAY }}
 
   # Test_Second_Job:
-  #   runs-on: windows-2019
+  #   runs-on: ubuntu-latest
   #   needs: Test_First_Job
   #   strategy:
   #     fail-fast: false
   #     matrix: ${{ fromJson(needs.Test_First_Job.outputs.JSON_ARRAY) }}
   #   steps:
   #     - name: Print JSON_ARRAY
-  #       shell: pwsh
   #       run: |
-  #         Write-Host "JSON_ARRAY VALUE IN SECOND JOB: ${{ matrix.JSON_ARRAY }}"
+  #         echo "JSON_ARRAY VALUE IN SECOND JOB: ${{ matrix.JSON_ARRAY }}"
+
+  Test_First_Job:
+    runs-on: windows-2019
+    steps:
+      - name: Convert input to JSON for matrix.
+        id: matrix_json_step
+        shell: pwsh
+        run: |
+          $jsonArrayString = "{`"JSON_ARRAY`":[`"test1:test2:test3`",`"test4:test5:test6`"]}"
+          echo "${$jsonArrayString}"
+          echo "JSON_ARRAY=${jsonArrayString}" >> $GITHUB_OUTPUT
+    outputs:
+      JSON_ARRAY: ${{ steps.matrix_json_step.outputs.JSON_ARRAY }}
+
+  Test_Second_Job:
+    runs-on: windows-2019
+    needs: Test_First_Job
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.Test_First_Job.outputs.JSON_ARRAY) }}
+    steps:
+      - name: Print JSON_ARRAY
+        shell: pwsh
+        run: |
+          Write-Host "JSON_ARRAY VALUE IN SECOND JOB: ${{ matrix.JSON_ARRAY }}"
