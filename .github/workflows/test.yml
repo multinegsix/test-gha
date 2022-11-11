@@ -36,8 +36,8 @@ jobs:
         shell: pwsh
         run: |
           $jsonArrayString = "{`"JSON_ARRAY`":[`"test1:test2:test3`",`"test4:test5:test6`"]}"
-          echo "${$jsonArrayString}"
-          echo "JSON_ARRAY=${jsonArrayString}" >> $GITHUB_OUTPUT
+          Write-Host "${jsonArrayString}"
+          "JSON_ARRAY=${jsonArrayString}" | Add-Content -Path $GITHUB_OUTPUT
     outputs:
       JSON_ARRAY: ${{ steps.matrix_json_step.outputs.JSON_ARRAY }}
 
